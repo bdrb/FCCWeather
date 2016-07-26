@@ -47,7 +47,7 @@ app.weatherGet = function (coord) {
     //$("#weather").load(app.apiUrlGet(coord));
     $.get(app.apiUrlGet(coord), function (data, status) {
 
-        function itemShow(dt)
+        function itemShow(dt, lvl)
         {
             for(var i = 0; i < Object.keys(dt).length; i++)
             {
@@ -58,22 +58,45 @@ app.weatherGet = function (coord) {
                     {
                         for(var ii = 0; ii < dt[key].length; ii++)
                         {
-                            itemShow(dt[key][ii]);
+                            itemShow(dt[key][ii], lvl + "@#$" + key);
                         }
                     }
                     else
                     {
-                        itemShow(dt[key]);
+                        itemShow(dt[key], lvl + "@#$" + key);
                     }    
                 }
                 else
                 {
-                    $("#" + key  + "").text(key + ": " + dt[key]);
+                    //$("#" + key  + "").text(lvl + "," + key + ": " + dt[key]);
+
+                    var lvlArr = lvl.split("@#$");
+                    lvlArr.push(key);
+
+                    var lastElem = $("#" + lvlArr[0]);
+                    for (var i = 1; i < lvlArr.length; i++)
+                    {
+                       /* if(lastElem == "")
+                        {
+                            var elems = $("#" + lvlArr[i]);
+                        }
+                        else
+                        {*/
+                            var elems = $("#" + lastElem[0].id + ">" + lvlArr[i]);
+                       // }
+                        if (elems.length == 0){
+                            $(lastElem.append("<div id = '" + key  +"'>" + key + ": " + dt[key] + "</div>"));
+                            lastElem = $("#" + key);
+                        }
+                        
+                    }
+
+                    
                 }
             }
         }
         
-        itemShow(data);
+        itemShow(data, "weather-container");
         
 
         //$("#weather-container").text(data);
@@ -131,6 +154,10 @@ app.weatherGet = function (coord) {
 }
 
 $(document).ready(function () {
+
+    var a = $("#weather-container");
+    var b = $("#weather-fontainer");
+    
     app.weatherGet({
         "lon": 139,
         "lat": 35
