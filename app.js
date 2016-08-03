@@ -1,9 +1,21 @@
 var app = {};
-app.apiUrlGet = function (coord) {
-    return "http://api.openweathermap.org/data/2.5/weather?lat=" + coord.lat + "&lon=" + coord.lon + "&units=metric&APPID=5442ef930ed995579c363b55b8d13a4c"; //&units=imperial
+app.apiUrlGet = function (coord, units) {
+    return "http://api.openweathermap.org/data/2.5/weather?lat=" + coord.lat + "&lon=" + coord.lon + "&units="+ units + "&APPID=5442ef930ed995579c363b55b8d13a4c"; //&units=imperial
 };
 //-----------------------------------
 app.items = {
+        "dt": "Time of data calculation, unix, UTC", //1470052227,
+//        "id": "City ID", //1851632,
+        "name": "City name", //"Shuzenji",
+//        "cod": "Internal parameter", //200
+    "sys": {
+//          "type": "Internal parameter", //3,
+//            "id": "Internal parameter", //10354,
+//            "message": "Internal parameter", //0.0285,
+            "country": "Country code (GB, JP etc.)", //"JP",
+            "sunrise": "Sunrise time, unix, UTC", //1469994844,
+            "sunset": "Sunset time, unix, UTC", //1470044797
+        },
         "coord": {
             "lon": "City geo location, longitude", //138.93,
             "lat": "City geo location, latitude", //34.97
@@ -14,7 +26,7 @@ app.items = {
             "description": "Weather condition within the group", //"moderate rain",
             "icon": "Weather icon id" //"10n"
         }],
-        "base": "Internal parameter", //"stations",
+        //"base": "Internal parameter", //"stations",
         "main": {
             "temp": "Temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.", //299.66,
             "pressure": "Atmospheric pressure (on the sea level, if there is no sea_level or grnd_level data), hPa", //1008,
@@ -35,25 +47,15 @@ app.items = {
         },
         "clouds": {
             "all": "Cloudiness, %" //92
-        },
-        "dt": "Time of data calculation, unix, UTC", //1470052227,
-        "sys": {
-            "type": "Internal parameter", //3,
-            "id": "Internal parameter", //10354,
-            "message": "Internal parameter", //0.0285,
-            "country": "Country code (GB, JP etc.)", //"JP",
-            "sunrise": "Sunrise time, unix, UTC", //1469994844,
-            "sunset": "Sunset time, unix, UTC", //1470044797
-        },
-        "id": "City ID", //1851632,
-        "name": "City name", //"Shuzenji",
-        "cod": "Internal parameter" //200
+        }
+        
+        
     }
 //-----------------------------------
 
 app.elemAppend = function(parentElem, key, descr, dt, isContainer){
     if(isContainer){
-        $(parentElem.append("<ul id = '" + key + "'>" + key + "</ul>"));;    
+        $(parentElem.append("<ul id = '" + key + "'></ul>"));;    
     }else{
         $(parentElem.append("<li id = '" + key + "'>" + dt + " (" + key + "): " + descr + "</li>"));        
     }
@@ -96,8 +98,8 @@ app.weatherGet = function (coord) {
 
 
 $(document).ready(function () {
-    app.weatherGet({
-        "lon": 139,
-        "lat": 35
-    });
+    app.weatherGet(
+        { "lon": 139, "lat": 35 },
+        "metric"
+    );
 });
