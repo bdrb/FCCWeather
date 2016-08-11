@@ -48,18 +48,18 @@ app.items = {
         "clouds": {
             "all": "Cloudiness, %" //92
         }
-        
-        
+
+
     }
 //-----------------------------------
 
 app.elemAppend = function(parentElem, key, descr, dt, isContainer){
     if(isContainer){
-        $(parentElem.append("<ul id = '" + key + "'></ul>"));;    
+        $(parentElem.append("<ul id = '" + key + "'></ul>"));;
     }else{
-        $(parentElem.append("<li id = '" + key + "'>" + dt + " (" + key + "): " + descr + "</li>"));        
+        $(parentElem.append("<li id = '" + key + "'>" + dt + " (" + key + "): " + descr + "</li>"));
     }
-    
+
 }
 
 app.weatherGet = function (coord) {
@@ -72,9 +72,9 @@ app.weatherGet = function (coord) {
                 var key = Object.keys(descr)[i];
 
                 if (typeof descr[key] == "object") {
-                                        
+
                     app.elemAppend(parentElem, parent + "-" + key, descr[key], dt[key], true);
-                                        
+
                     if (Array.isArray(descr[key])) {
                         for (var ii = 0; ii < descr[key].length; ii++) {
                             itemShow(descr[key][ii], dt[key][ii], parent + "-" + key);
