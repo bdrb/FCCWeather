@@ -4,60 +4,64 @@ app.apiUrlGet = function (coord, units) {
 };
 //-----------------------------------
 app.items = {
-        "dt": "Time of data calculation, unix, UTC", //1470052227,
-//        "id": "City ID", //1851632,
-        "name": "City name", //"Shuzenji",
-//        "cod": "Internal parameter", //200
-    "sys": {
-//          "type": "Internal parameter", //3,
-//            "id": "Internal parameter", //10354,
-//            "message": "Internal parameter", //0.0285,
-            "country": "Country code (GB, JP etc.)", //"JP",
-            "sunrise": "Sunrise time, unix, UTC", //1469994844,
-            "sunset": "Sunset time, unix, UTC", //1470044797
+        "dt": showText("Time of data calculation", Date),
+        "name": showText("City name", function (v){return "<strong>" + v + "</strong>"}), //"Shuzenji",
+        "sys": {
+            "country": showText("Country code"), //"JP",
+            "sunrise": showText("Sunrise time", function (v){return new Date(Number(v))}), //1469994844,
+            "sunset": showText("Sunset time", Date)//"Sunset time, unix, UTC", //1470044797
         },
         "coord": {
-            "lon": "City geo location, longitude", //138.93,
-            "lat": "City geo location, latitude", //34.97
+            "lon": showText("City geo location, longitude"), //138.93,
+            "lat": showText("City geo location, latitude") //34.97
         },
         "weather": [{
-            "id": "Weather condition id", //501,
-            "main": "Group of weather parameters (Rain, Snow, Extreme etc.)", //"Rain",
-            "description": "Weather condition within the group", //"moderate rain",
-            "icon": "Weather icon id" //"10n"
+            "id": showText("Weather condition id"), //501,
+            "main": showText("Group of weather parameters"), //"Rain",
+            "description": showText("Weather condition within the group"), //"moderate rain",
+            "icon": showText("Weather icon id")//function(val){"Weather icon id: " + val} //"10n"
         }],
         //"base": "Internal parameter", //"stations",
         "main": {
-            "temp": "Temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.", //299.66,
-            "pressure": "Atmospheric pressure (on the sea level, if there is no sea_level or grnd_level data), hPa", //1008,
-            "humidity": "Humidity, %", //58,
-            "temp_min": "Minimum temperature at the moment. This is deviation from current temp that is possible for large cities and megalopolises geographically expanded (use these parameter optionally). Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.", //299.26,
-            "temp_max": "Maximum temperature at the moment. This is deviation from current temp that is possible for large cities and megalopolises geographically expanded (use these parameter optionally). Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.", //300.37
+            "temp": showText("Temperature"), //299.66,
+            "pressure": showText("Atmospheric pressure, hPa"), //1008,
+            "humidity": showText("Humidity, %"), //58,
+            "temp_min": showText("Minimum temperature at the moment"), //299.26,
+            "temp_max": showText("Maximum temperature at the moment"), //300.37
         },
         "wind": {
-            "speed": "Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.", //1.03,
-            "deg": "Wind direction, degrees (meteorological)", //132,
-            "gust": "gust" //1.54
+            "speed": showText("Wind speed"), //1.03,
+            "deg": showText("Wind direction, degrees (meteorological)"), //132,
+            "gust": showText("gust") //1.54
         },
         "rain": {
-            "3h": "Rain volume for the last 3 hours", //8.72
+            "3h": showText("Rain volume for the last 3 hours"), //8.72
         },
         "snow": {
-            "3h": "Snow volume for the last 3 hours", //8.72
+            "3h": showText("Snow volume for the last 3 hours"), //8.72
         },
         "clouds": {
-            "all": "Cloudiness, %" //92
+            "all": showText("Cloudiness, %") //92
         }
 
 
     }
 //-----------------------------------
-
+function showText(text, processing = function(v){return v;}){
+  return function(val){
+     return text + ": " + processing(val);
+   };
+}
 app.elemAppend = function(parentElem, key, descr, dt, isContainer){
     if(isContainer){
         $(parentElem.append("<ul id = '" + key + "'></ul>"));;
     }else{
-        $(parentElem.append("<li id = '" + key + "'>" + dt + " (" + key + "): " + descr + "</li>"));
+      if(typeof descr == "function"){
+          $(parentElem.append("<li id = '" + key + "'>" + descr(dt) + "</li>"));
+      }else{
+          $(parentElem.append("<li id = '" + key + "'>" + dt + " (" + key + "): " + descr + "</li>"));
+      }
+
     }
 
 }
