@@ -3,13 +3,16 @@ app.apiUrlGet = function (coord, units) {
     return "http://api.openweathermap.org/data/2.5/weather?lat=" + coord.lat + "&lon=" + coord.lon + "&units="+ units + "&APPID=5442ef930ed995579c363b55b8d13a4c"; //&units=imperial
 };
 //-----------------------------------
+app.getDateString = function (v){
+  return new Date(Number(v));
+}
 app.items = {
-        "dt": showText("Time of data calculation", Date),
+        "dt": showText("Time of data calculation", app.getDateString),
         "name": showText("City name", function (v){return "<strong>" + v + "</strong>"}), //"Shuzenji",
         "sys": {
             "country": showText("Country code"), //"JP",
-            "sunrise": showText("Sunrise time", function (v){return new Date(Number(v))}), //1469994844,
-            "sunset": showText("Sunset time", Date)//"Sunset time, unix, UTC", //1470044797
+            "sunrise": showText("Sunrise time", app.getDateString), //1469994844,
+            "sunset": showText("Sunset time", app.getDateString)//"Sunset time, unix, UTC", //1470044797
         },
         "coord": {
             "lon": showText("City geo location, longitude"), //138.93,
@@ -99,11 +102,32 @@ app.weatherGet = function (coord) {
     });
 
 };
-
+app.getCoord = function(){
+  var coord = {lon:0,lat:0};
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      coord.lat = position.coords.latitude;
+      coord.lon = position.coords.longitude;
+    });
+  }
+  return coord;
+}
 
 $(document).ready(function () {
-    app.weatherGet(
-        { "lon": 139, "lat": 35 },
-        "metric"
-    );
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      app.weatherGet(
+          { "lon": position.coords.longitude, "lat": position.coords.latitude },
+          "metric"
+      );
+      // coord.lat = position.coords.latitude;
+      // coord.lon = position.coords.longitude;
+    });
+  }
+
+    // app.weatherGet(
+    //     app.getCoord(),//{ "lon": 139, "lat": 35 },
+    //     "metric"
+    // );
 });
