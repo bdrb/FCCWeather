@@ -1,10 +1,18 @@
 var app = {};
 app.apiUrlGet = function (coord, units) {
-    return "http://api.openweathermap.org/data/2.5/weather?lat=" + coord.lat + "&lon=" + coord.lon + "&units="+ units + "&APPID=5442ef930ed995579c363b55b8d13a4c"; //&units=imperial
+    var url = "http://api.openweathermap.org/data/2.5/weather?lat=" + coord.lat + "&lon=" + coord.lon + "&units="+ units + "&APPID=5442ef930ed995579c363b55b8d13a4c"; //&units=imperial
+    return url;
 };
 //-----------------------------------
 app.getDateString = function (v){
-  return new Date(Number(v));
+
+  //while (v.length < "1454284800000".length){
+  //    v = v + "0";
+  //}
+  return new Date(Number(v*1000));
+  //1454284800000
+  //1471315772
+  //return v;
 }
 app.items = {
         "dt": showText("Time of data calculation", app.getDateString),
@@ -69,9 +77,9 @@ app.elemAppend = function(parentElem, key, descr, dt, isContainer){
 
 }
 
-app.weatherGet = function (coord) {
+app.weatherGet = function (coord, units) {
 
-    $.get(app.apiUrlGet(coord), function (data, status) {
+    $.get(app.apiUrlGet(coord, units), function (data, status) {
 
         function itemShow(descr, dt, parent) {
             var parentElem = $("#" + parent);
